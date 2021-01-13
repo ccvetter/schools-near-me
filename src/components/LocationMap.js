@@ -1,50 +1,95 @@
 import React, { Component } from 'react'
-import GoogleMapReact from 'google-maps-react'
+import GoogleMapReact from 'google-map-react'
+import PropTypes from 'prop-types'
+import Marker from './marker/Marker'
 
-const mapStyles = {
-  width: '100%',
-  height: '100%'
+const AnyReactComponent = ({ text }) => <div>{text}</div>
+AnyReactComponent.propTypes = {
+  text: PropTypes.string
 }
 
 class LocationMap extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      center: {
-        lat: 0,
-        long: 0
-      },
-      zoom: 11
+      schoolMarkers: [],
+      locationMarker: {}
     }
   }
 
+  static defaultProps = {
+    center: {
+      lat: 33.95771196234695,
+      lng: -83.37485924829399
+    },
+    zoom: 11
+  }
+
+  handleClick = (event) => {
+    console.log(event)
+    this.setState({
+      locationMarker: {
+        lat: event.lat,
+        lng: event.lng
+      }
+    })
+  }
+
   componentDidMount () {
+    const _this = this
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(function (position) {
-        console.log('Latitude is:', position.coords.latitude)
-        console.log('Longitude is:', position.coords.longitude)
-        this.setState({ center: { lat: position.coords.latitude } })
-        this.setState({ center: { long: position.coords.longitude } })
+        _this.props.center.lat = position.coords.latitude
+        _this.props.center.lng = position.coords.longitude
+        _this.setState({
+          locationMarker: { lat: position.coords.latitude, lng: position.coords.longitude }
+        })
       })
-    } else {
-      console.log('Not Available')
     }
   }
 
   render () {
-    const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY
     return (
-      <></>
-      // <div style={mapStyles}>
-      //   <GoogleMapReact
-      //     bootstrapURLKeys={{ key: GOOGLE_API_KEY }}
-      //     defaultCenter={this.state.center}
-      //     defaultZoom={this.state.zoom}
-      //   ></GoogleMapReact>
-      // </div>
+      <div>
+        <div style={{ height: '80vh', width: '100%' }}>
+          <GoogleMapReact
+            bootstrapURLKeys={{
+              key: process.env.REACT_APP_GOOGLE_API_KEY,
+              libraries: ['places']
+            }}
+            defaultCenter={this.props.center}
+            defaultZoom={this.props.zoom}
+            onClick={this.handleClick}
+          >
+            <Marker
+              type="home"
+              lat={this.state.locationMarker.lat}
+              lng={this.state.locationMarker.lng}
+              name="My Location"
+              color="red"
+            />
+
+            { this.state.schoolMarkers.map((marker, i) => {
+              return (
+                <Marker
+                  key={i}
+                  type="school"
+                  lat={marker.lat}
+                  lng={marker.lng}
+                  text={marker.name}
+                />
+              )
+            })}
+          </GoogleMapReact>
+        </div>
+      </div>
     )
   }
 }
 
-export default LocationMap
+LocationMap.propTypes = {
+  center: PropTypes.object,
+  zoom: PropTypes.number
+}
 
+export default LocationMap

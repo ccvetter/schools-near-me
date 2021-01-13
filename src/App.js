@@ -1,22 +1,44 @@
-import React, { Component } from 'react'
-import logo from './logo.svg'
+import React, { useEffect, useState } from 'react'
 import './App.css'
 import LocationMap from './components/LocationMap'
+import LocationList from './components/LocationList'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
-class App extends Component {
-  render () {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <LocationMap></LocationMap>
-        </header>
-      </div>
-    )
-  }
+// class App extends Component {
+function App () {
+  const [appState, setAppState] = useState({
+    loading: false,
+    locations: null
+  })
+  // constructor () {
+  //   super()
+  //   this.handleClick = this.handleClick.bind(this)
+  // }
+
+  useEffect(() => {
+    setAppState({ loading: true })
+    const apiUrl = 'http://localhost:4000/schools'
+
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((locations) => {
+        console.log(locations)
+        setAppState({ loading: false, locations: locations })
+      })
+  }, [setAppState])
+
+  // handleClick (event) => {
+  //   console.log(event)
+  // }
+
+  // render () {
+  return (
+    <div className="App">
+      <LocationMap></LocationMap>
+      <LocationList locations={appState.locations}></LocationList>
+    </div>
+  )
+  // }
 }
 
 export default App

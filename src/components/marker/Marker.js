@@ -16,6 +16,7 @@ const Marker = (props: any) => {
               lat={props.lat}
               lng={props.lng}
               name={props.name}
+              icon={props.icon}
             />
   }
 }

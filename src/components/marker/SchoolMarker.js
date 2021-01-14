@@ -2,12 +2,14 @@ import React from 'react'
 import './SchoolMarker.css'
 
 const SchoolMarker = (props: any) => {
-  const { name } = props
+  const { name, icon } = props
+  console.log(icon)
   return (
     <div className="school-marker"
       style={{ cursor: 'pointer' }}
-      title={ name }
-    />
+      title={ name }>
+        <img className="icon" src={icon}></img>
+    </div>
   )
 }
 

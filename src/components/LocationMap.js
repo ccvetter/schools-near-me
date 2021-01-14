@@ -2,76 +2,83 @@ import React, { useEffect, useState } from 'react'
 import GoogleMapReact from 'google-map-react'
 import PropTypes from 'prop-types'
 import Marker from './marker/Marker'
+import _ from 'underscore'
 
 function LocationMap (props) {
-  const [location, setLocation] = useState({ lat: 33.9577, lng: -83.3748 })
+  const defaultCenter = { lat: 33.9577, lng: -83.3748 }
+  const [location, setLocation] = useState(props.location)
   const [zoom] = useState(11)
-  const [address, setAddress] = useState({})
 
   const handleClick = (e) => {
-    console.log(e)
     const loc = { lat: e.lat, lng: e.lng }
     setLocation(loc)
     props.onLocationChange(loc)
   }
 
-  const addressChange = (e) => {
-    setAddress(e)
-    console.log(e)
-    // const searchBox = new window.google.maps.places.SearchBox(e)
-    // console.log(searchBox)
-    // const autocomplete = new window.google.maps.places.Autocomplete(
-    //   document.getElementById('addressAuto'),
-    //   {
-    //     types: ['(cities)']
-    //   }
-    // )
-    // console.log(address, autocomplete)
-    console.log(address)
-  }
-
-  // const changeDistance = () => {
-  //   this.props.onDistanceChange()
-  // }
-
   useEffect(() => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(function (position) {
-        setLocation({ lat: position.coords.latitude, lng: position.coords.longitude })
+        const loc = { lat: position.coords.latitude, lng: position.coords.longitude }
+        setLocation(loc)
+        props.onLocationChange(loc)
       })
     }
-  })
+  }, [])
 
-  let schoolMarkers = []
-  if (!props.locations) return <span>Loading...</span>
+  const apiHasLoaded = (map, maps) => {
+    if (location) {
+      const center = new maps.LatLng(location)
+      map.panTo(center)
+    }
+  }
 
-  schoolMarkers = []
-  props.locations.forEach((marker, i) => {
+  // const addressChange = (places) => {
+  //   console.log(places)
+  //   setAddress(places)
+  //   // const searchBox = new window.google.maps.places.SearchBox(e)
+  //   // console.log(searchBox)
+  //   // const autocomplete = new window.google.maps.places.Autocomplete(
+  //   //   document.getElementById('addressAuto'),
+  //   //   {
+  //   //     types: ['(cities)']
+  //   //   }
+  //   // )
+  //   // console.log(address, autocomplete)
+  //   console.log(address)
+  // }
+
+  if (_.isEmpty(props.location) || !location) {
+    return <p>Loading...</p>
+  }
+  const schoolMarkers = []
+  !_.isEmpty(props.locations) && props.locations.forEach((marker, i) => {
     schoolMarkers.push(<Marker
       key={i}
       type="school"
       lat={marker.latitude}
       lng={marker.longitude}
-      text={marker.name}
+      name={marker.name}
       icon={marker.image_url}
     />)
   })
 
   return (
     <div>
-      <div style={{ height: '80vh', width: '100%' }}>
+      <div style={{ height: '60vh', width: '100%' }}>
+        <div id="map"></div>
         <GoogleMapReact
+          key={location}
           bootstrapURLKeys={{
             key: process.env.REACT_APP_GOOGLE_API_KEY,
             libraries: ['places']
           }}
           onGoogleApiLoaded={({ map, maps }) => {
-            // addressChange(maps.places)
-            console.log(maps.places)
+            apiHasLoaded(map, maps)
           }}
-          defaultCenter={location}
+          yesIWantToUseGoogleMapApiInternals
+          defaultCenter={defaultCenter}
           defaultZoom={zoom}
-          onClick={handleClick}
+          onClick={(e) => handleClick(e)}
         >
           <Marker
             type="home"
@@ -83,11 +90,17 @@ function LocationMap (props) {
           {schoolMarkers}
         </GoogleMapReact>
       </div>
-      <div>
+      <div className="row">
+        <div className="col-md-4">
+          <input type="text" placeholder={props.distance}
+            onChange={(event) => props.onDistanceChange(event.target.value)}></input>
+        </div>
+      </div>
+      <div className="mt-3">
         <input
           id="addressAuto"
           placeholder="Enter an address"
-          onChange={event => addressChange(event.target.value)}
+          // onChange={(event) => addressChange(event.target.value)}
           type="text"
           name="address">
         </input>
@@ -101,7 +114,9 @@ LocationMap.propTypes = {
   zoom: PropTypes.number,
   onLocationChange: PropTypes.func,
   onDistanceChange: PropTypes.func,
-  locations: PropTypes.array
+  distance: PropTypes.number,
+  locations: PropTypes.array,
+  location: PropTypes.object
 }
 
-export default LocationMap
+export default React.memo(LocationMap)

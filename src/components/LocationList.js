@@ -1,45 +1,52 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+import _ from 'underscore'
 
-class LocationList extends Component {
-  render () {
-    if (!this.props.locations) {
-      return <p>Loading...</p>
-    }
+function LocationList (props) {
+  const handleClick = (e, loc) => {
+    e.preventDefault()
+    props.onLocationChange({ lat: loc.latitude, lng: loc.longitude })
+  }
 
+  if (_.isEmpty(props.locations)) {
     return (
-      <div>
-        { this.props.locations.length > 0 &&
-          <table >
-            <thead>
-              <tr>
-                <th></th>
-                <th>School</th>
-                <th>City</th>
-                <th>State</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              { this.props.locations.map((loc, i) =>
-                <tr key={loc.lat}>
-                  <td key={'image' + i}><img className="thumbnail" src={loc.image_url}></img></td>
-                  <td key={'name' + i}>{loc.name}</td>
-                  <td key={'city' + i}>{loc.city}</td>
-                  <td key={'state' + i}>{loc.state}</td>
-                  <td><button>Center Map</button></td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        }
-      </div>
+      <div><p>No schools within range</p></div>
     )
   }
+
+  return (
+    <div>
+      { props.locations.length > 0 &&
+        <table className="table table-dark">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">School</th>
+              <th scope="col">City</th>
+              <th scope="col">State</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            { props.locations.map((loc, i) =>
+              <tr key={loc.lat}>
+                <td key={'image' + i}><img key={loc.image_url} className="thumbnail" src={loc.image_url}></img></td>
+                <td key={'name' + i}>{loc.name}</td>
+                <td key={'city' + i}>{loc.city}</td>
+                <td key={'state' + i}>{loc.state}</td>
+                <td key={loc}><button onClick={(e, location) => handleClick(e, loc)}>Center Map</button></td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      }
+    </div>
+  )
 }
 
 LocationList.propTypes = {
-  locations: PropTypes.array
+  locations: PropTypes.array,
+  onLocationChange: PropTypes.func
 }
 
 export default LocationList

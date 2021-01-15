@@ -86,7 +86,7 @@ function LocationMap (props) {
           {schoolMarkers}
         </GoogleMapReact>
       </div>
-      <div className="mt-3 mb-3 text-center">
+      <div className="mt-3 mb-3 text-center distance">
         <label className="mr-2">Distance from location</label>
         <input type="text" placeholder={props.distance}
           onChange={(event) => props.onDistanceChange(event.target.value)}></input>

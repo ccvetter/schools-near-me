@@ -17,7 +17,7 @@ function LocationList (props) {
   }
 
   return (
-    <div>
+    <div className="list-table">
       { props.locations.length > 0 &&
         <table className="table table-dark">
           <thead>

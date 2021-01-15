@@ -1,13 +1,22 @@
 .App {
   text-align: center;
+  background-color: #343a40;
 }
 
 .thumbnail {
-  height: 100px;
+  height: 160px;
   width: auto;
 }
 
-table {
+.list-table {
   height: 40vh;
-  overflow:scroll
+  overflow: auto;
 }
+
+.distance {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+}
+
+td img { vertical-align: top; }

@@ -39,7 +39,7 @@ function LocationList (props) {
                   <td>{loc.city}</td>
                   <td>{loc.state}</td>
                   <td>{parseFloat(loc.distance).toFixed(0)} miles</td>
-                  <td><button key={'button' + i} onClick={(e) => handleClick(e, loc)}>Center Map</button></td>
+                  <td><button className="btn btn-info" key={'button' + i} onClick={(e) => handleClick(e, loc)}>Center Map</button></td>
                 </tr>
               )}
             </tbody>

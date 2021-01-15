@@ -6,51 +6,47 @@ import _ from 'underscore'
 
 function LocationMap (props) {
   const defaultCenter = { lat: 33.9577, lng: -83.3748 }
-  const [location, setLocation] = useState(props.location)
   const [zoom] = useState(11)
+  const [map, setMap] = useState(null)
+  const [maps, setMaps] = useState(null)
 
+  // Change props.location when clicking on the map
   const handleClick = (e) => {
     const loc = { lat: e.lat, lng: e.lng }
-    setLocation(loc)
     props.onLocationChange(loc)
   }
 
+  // Get the users position and set props.location
   useEffect(() => {
-    if ('geolocation' in navigator) {
+    if ('geolocation' in navigator && !props.location) {
       navigator.geolocation.getCurrentPosition(function (position) {
         const loc = { lat: position.coords.latitude, lng: position.coords.longitude }
-        setLocation(loc)
         props.onLocationChange(loc)
       })
     }
-  }, [])
+  })
 
-  const apiHasLoaded = (map, maps) => {
-    if (location) {
-      const center = new maps.LatLng(location)
+  // Update the map on props.location and maps changes
+  useEffect(() => {
+    // Only update if map is loaded
+    if (map) updateMap()
+  }, [props.location, maps])
+
+  const updateMap = () => {
+    if (props.location) {
+      const center = new maps.LatLng(props.location)
+      // Recenter the map on new location
       map.panTo(center)
     }
   }
 
-  // const addressChange = (places) => {
-  //   console.log(places)
-  //   setAddress(places)
-  //   // const searchBox = new window.google.maps.places.SearchBox(e)
-  //   // console.log(searchBox)
-  //   // const autocomplete = new window.google.maps.places.Autocomplete(
-  //   //   document.getElementById('addressAuto'),
-  //   //   {
-  //   //     types: ['(cities)']
-  //   //   }
-  //   // )
-  //   // console.log(address, autocomplete)
-  //   console.log(address)
-  // }
-
-  if (_.isEmpty(props.location) || !location) {
+  // Show loading if props.location is empty
+  if (_.isEmpty(props.location)) {
     return <p>Loading...</p>
   }
+
   const schoolMarkers = []
+  // Create school markers as long as props.locations is populated
   !_.isEmpty(props.locations) && props.locations.forEach((marker, i) => {
     schoolMarkers.push(<Marker
       key={i}
@@ -67,13 +63,13 @@ function LocationMap (props) {
       <div style={{ height: '60vh', width: '100%' }}>
         <div id="map"></div>
         <GoogleMapReact
-          key={location}
+          key={props.location}
           bootstrapURLKeys={{
-            key: process.env.REACT_APP_GOOGLE_API_KEY,
-            libraries: ['places']
+            key: process.env.REACT_APP_GOOGLE_API_KEY
           }}
           onGoogleApiLoaded={({ map, maps }) => {
-            apiHasLoaded(map, maps)
+            setMap(map)
+            setMaps(maps)
           }}
           yesIWantToUseGoogleMapApiInternals
           defaultCenter={defaultCenter}
@@ -82,28 +78,18 @@ function LocationMap (props) {
         >
           <Marker
             type="home"
-            lat={location.lat}
-            lng={location.lng}
+            lat={props.location.lat}
+            lng={props.location.lng}
             name="My Location"
             color="red"
           />
           {schoolMarkers}
         </GoogleMapReact>
       </div>
-      <div className="row">
-        <div className="col-md-4">
-          <input type="text" placeholder={props.distance}
-            onChange={(event) => props.onDistanceChange(event.target.value)}></input>
-        </div>
-      </div>
-      <div className="mt-3">
-        <input
-          id="addressAuto"
-          placeholder="Enter an address"
-          // onChange={(event) => addressChange(event.target.value)}
-          type="text"
-          name="address">
-        </input>
+      <div className="mt-3 mb-3 text-center">
+        <label className="mr-2">Distance from location</label>
+        <input type="text" placeholder={props.distance}
+          onChange={(event) => props.onDistanceChange(event.target.value)}></input>
       </div>
     </div>
   )

@@ -4,6 +4,13 @@ class SchoolsController < ApplicationController
   end
 
   def filter_schools
-    render json: School.near([params[:lat], params[:lng]], params[:distance])
+    coordinates = [params[:lat], params[:lng]]
+    
+    schools = School.near(coordinates, params[:distance])
+    
+    schools.each do |school| 
+      school.distance = school.distance_to(coordinates)
+    end
+    render json: schools
   end
 end

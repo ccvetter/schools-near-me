@@ -3,10 +3,10 @@
 }
 
 .thumbnail {
-  width: 25%;
-  height: 50%;
+  height: 15%;
 }
 
 table {
   height: 40vh;
+  overflow:scroll
 }

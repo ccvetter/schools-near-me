@@ -3,11 +3,13 @@ import PropTypes from 'prop-types'
 import _ from 'underscore'
 
 function LocationList (props) {
+  // Change location when center map button is clicked
   const handleClick = (e, loc) => {
     e.preventDefault()
     props.onLocationChange({ lat: loc.latitude, lng: loc.longitude })
   }
 
+  // If props.locations is empty, show message
   if (_.isEmpty(props.locations)) {
     return (
       <div><p>No schools within range</p></div>
@@ -24,17 +26,19 @@ function LocationList (props) {
               <th scope="col">School</th>
               <th scope="col">City</th>
               <th scope="col">State</th>
+              <th scope="col">Distance</th>
               <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
             { props.locations.map((loc, i) =>
               <tr key={loc.lat}>
-                <td key={'image' + i}><img key={loc.image_url} className="thumbnail" src={loc.image_url}></img></td>
+                <td key={'image' + i}><img className="thumbnail" src={loc.image_url}></img></td>
                 <td key={'name' + i}>{loc.name}</td>
                 <td key={'city' + i}>{loc.city}</td>
                 <td key={'state' + i}>{loc.state}</td>
-                <td key={loc}><button onClick={(e, location) => handleClick(e, loc)}>Center Map</button></td>
+                <td key={'distance' + i}>{parseFloat(loc.distance).toFixed(0)} miles</td>
+                <td key={loc}><button key={'button' + i} onClick={(e) => handleClick(e, loc)}>Center Map</button></td>
               </tr>
             )}
           </tbody>
@@ -46,6 +50,7 @@ function LocationList (props) {
 
 LocationList.propTypes = {
   locations: PropTypes.array,
+  location: PropTypes.object,
   onLocationChange: PropTypes.func
 }
 

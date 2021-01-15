@@ -10,19 +10,17 @@ function App () {
   const [distance, setDistance] = useState(50)
 
   useEffect(() => {
-    update()
-  }, [distance])
+    if (location) update()
+  }, [distance, location])
 
   const changeDistance = (d) => {
     if (d) {
       setDistance(parseInt(d))
-      update()
     }
   }
 
   const changeLocation = useCallback(loc => {
     setLocation({ lat: parseFloat(loc.lat), lng: parseFloat(loc.lng) })
-    if (location) update()
   })
 
   const update = () => {
@@ -41,7 +39,7 @@ function App () {
         locations={locations}
         location={location}
         distance={distance}></LocationMap>
-      <LocationList locations={locations} onLocationChange={changeLocation}></LocationList>
+      <LocationList locations={locations} location={location} onLocationChange={changeLocation}></LocationList>
     </div>
   )
 }

@@ -1,10 +1,11 @@
 FactoryBot.define do 
   factory :school do 
     name { Faker::University.name }
-    address__city { Faker::Address.city }
-    address__state { Faker::Address.state }
-    address__latitude { Faker::Address.latitude }
-    address_longitude { Faker::Address.longitude }
+    city { Faker::Address.city }
+    state { Faker::Address.state }
+    latitude { 20 }
+    longitude { 40 }
+    distance { Faker::Number.number(digits: 1).to_i }
     image_url { Faker::Internet.url }
   end
 end

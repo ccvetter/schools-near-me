@@ -1,8 +1,9 @@
 import React from 'react'
 import HomeMarker from './HomeMarker'
 import SchoolMarker from './SchoolMarker'
+import PropTypes from 'prop-types'
 
-const Marker = (props: any) => {
+function Marker (props) {
   switch (props.type) {
     case 'home':
       return <HomeMarker
@@ -19,6 +20,15 @@ const Marker = (props: any) => {
               icon={props.icon}
             />
   }
+}
+
+Marker.propTypes = {
+  type: PropTypes.string,
+  name: PropTypes.string,
+  lat: PropTypes.any,
+  lng: PropTypes.any,
+  color: PropTypes.string,
+  icon: PropTypes.string
 }
 
 export default Marker

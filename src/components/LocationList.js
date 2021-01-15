@@ -17,33 +17,35 @@ function LocationList (props) {
   }
 
   return (
-    <div className="list-table">
-      { props.locations.length > 0 &&
-        <table className="table table-dark">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col">School</th>
-              <th scope="col">City</th>
-              <th scope="col">State</th>
-              <th scope="col">Distance</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            { props.locations.map((loc, i) =>
-              <tr key={'row' + i}>
-                <td><img className="thumbnail" src={loc.image_url}></img></td>
-                <td>{loc.name}</td>
-                <td>{loc.city}</td>
-                <td>{loc.state}</td>
-                <td>{parseFloat(loc.distance).toFixed(0)} miles</td>
-                <td><button key={'button' + i} onClick={(e) => handleClick(e, loc)}>Center Map</button></td>
+    <div className="list-background">
+      <div className="list-table">
+        { props.locations.length > 0 &&
+          <table className="table table-dark">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">School</th>
+                <th scope="col">City</th>
+                <th scope="col">State</th>
+                <th scope="col">Distance</th>
+                <th scope="col"></th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      }
+            </thead>
+            <tbody>
+              { props.locations.map((loc, i) =>
+                <tr key={'row' + i}>
+                  <td><img className="thumbnail" src={loc.image_url}></img></td>
+                  <td>{loc.name}</td>
+                  <td>{loc.city}</td>
+                  <td>{loc.state}</td>
+                  <td>{parseFloat(loc.distance).toFixed(0)} miles</td>
+                  <td><button key={'button' + i} onClick={(e) => handleClick(e, loc)}>Center Map</button></td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        }
+      </div>
     </div>
   )
 }

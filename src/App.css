@@ -1,11 +1,15 @@
 .App {
   text-align: center;
-  background-color: #343a40;
 }
 
 .thumbnail {
   height: 160px;
   width: auto;
+}
+
+.list-background {
+  height: 40vh;
+  background-color: #343a40;
 }
 
 .list-table {

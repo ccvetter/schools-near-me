@@ -32,13 +32,13 @@ function LocationList (props) {
           </thead>
           <tbody>
             { props.locations.map((loc, i) =>
-              <tr key={loc.lat}>
-                <td key={'image' + i}><img className="thumbnail" src={loc.image_url}></img></td>
-                <td key={'name' + i}>{loc.name}</td>
-                <td key={'city' + i}>{loc.city}</td>
-                <td key={'state' + i}>{loc.state}</td>
-                <td key={'distance' + i}>{parseFloat(loc.distance).toFixed(0)} miles</td>
-                <td key={loc}><button key={'button' + i} onClick={(e) => handleClick(e, loc)}>Center Map</button></td>
+              <tr key={'row' + i}>
+                <td><img className="thumbnail" src={loc.image_url}></img></td>
+                <td>{loc.name}</td>
+                <td>{loc.city}</td>
+                <td>{loc.state}</td>
+                <td>{parseFloat(loc.distance).toFixed(0)} miles</td>
+                <td><button key={'button' + i} onClick={(e) => handleClick(e, loc)}>Center Map</button></td>
               </tr>
             )}
           </tbody>
